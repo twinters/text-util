@@ -1,6 +1,6 @@
 package be.thomaswinters.ner;
 
-import be.thomaswinters.replacement.data.Replacer;
+import be.thomaswinters.replacement.Replacer;
 import com.google.common.collect.ImmutableList;
 
 import java.time.LocalDateTime;

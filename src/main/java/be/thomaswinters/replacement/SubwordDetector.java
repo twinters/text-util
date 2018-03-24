@@ -1,4 +1,4 @@
-package be.thomaswinters.replacement.data;
+package be.thomaswinters.replacement;
 
 import java.util.Optional;
 

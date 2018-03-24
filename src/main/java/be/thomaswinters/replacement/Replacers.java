@@ -1,4 +1,4 @@
-package be.thomaswinters.replacement.data;
+package be.thomaswinters.replacement;
 
 import com.google.common.collect.ImmutableSet;
 
@@ -6,7 +6,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Replacers {
+public class Replacers implements IReplacer {
     private final ImmutableSet<Replacer> replacers;
 
     public Replacers(Collection<? extends Replacer> replacers) {
@@ -17,6 +17,7 @@ public class Replacers {
         return replacers.stream().map(e -> e.getWord()).collect(Collectors.toList());
     }
 
+    @Override
     public Replacement replace(Replacement text) {
         for (Replacer r : replacers) {
             text = r.replace(text);
@@ -24,6 +25,7 @@ public class Replacers {
         return text;
     }
 
+    @Override
     public String replace(String text) {
         for (Replacer r : replacers) {
             text = r.replace(text);

@@ -1,4 +1,4 @@
-package be.thomaswinters.replacement.data;
+package be.thomaswinters.replacement;
 
 import com.google.common.collect.ImmutableMultiset;
 import com.google.common.collect.ImmutableMultiset.Builder;

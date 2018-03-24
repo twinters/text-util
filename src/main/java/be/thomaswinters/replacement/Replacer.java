@@ -1,4 +1,4 @@
-package be.thomaswinters.replacement.data;
+package be.thomaswinters.replacement;
 
 import java.util.Arrays;
 import java.util.List;
@@ -6,7 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class Replacer {
+public class Replacer implements IReplacer {
     private final String word;
     private final String replacementWord;
     private final boolean replaceSubwords;
@@ -57,6 +57,7 @@ public class Replacer {
     /*-********************************************-*
      *  Actions
      *-********************************************-*/
+    @Override
     public Replacement replace(Replacement replacement) {
 
         String text = replacement.getText();
@@ -102,6 +103,7 @@ public class Replacer {
         // return pattern.matcher(text).replaceAll(replacementWord);
     }
 
+    @Override
     public String replace(String text) {
         return replace(new Replacement(text)).getText();
     }
