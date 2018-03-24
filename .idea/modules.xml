@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/text-util.iml" filepath="$PROJECT_DIR$/.idea/modules/text-util.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/text-util_main.iml" filepath="$PROJECT_DIR$/.idea/modules/text-util_main.iml" group="text-util" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/text-util_test.iml" filepath="$PROJECT_DIR$/.idea/modules/text-util_test.iml" group="text-util" />
     </modules>
   </component>
 </project>
