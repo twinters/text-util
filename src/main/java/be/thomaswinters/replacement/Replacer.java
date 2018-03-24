@@ -42,6 +42,12 @@ public class Replacer implements IReplacer {
         this(word, replacementWord, true);
     }
 
+    public static List<Replacer> createReplacers(String word, List<String> replacementsWords, boolean replaceSubwords, boolean matchCase) {
+        return replacementsWords.stream()
+                .map(replacementWord -> new Replacer(word, replacementWord, replaceSubwords, matchCase))
+                .collect(Collectors.toList());
+    }
+
     /*-********************************************-*
      *  Data
      *-********************************************-*/
@@ -191,7 +197,7 @@ public class Replacer implements IReplacer {
 
     @Override
     public String toString() {
-        return "" + word + "->" + replacementWord + (replaceSubwords ? "" : "(No Subwords)");
+        return "" + word + "->" + replacementWord + (replaceSubwords ? "(Subwords)" : "");
     }
 
     /*-********************************************-*/
