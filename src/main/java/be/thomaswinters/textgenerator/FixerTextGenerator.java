@@ -2,8 +2,8 @@ package be.thomaswinters.textgenerator;
 
 import java.util.List;
 
-import be.thomaswinters.sentencemarkov.fixers.CompositeFixer;
-import be.thomaswinters.sentencemarkov.fixers.ISentenceFixer;
+import be.thomaswinters.textgenerator.fixers.CompositeFixer;
+import be.thomaswinters.textgenerator.fixers.ISentenceFixer;
 
 public class FixerTextGenerator implements ITextGenerator {
 	private final ISentenceFixer fixer;

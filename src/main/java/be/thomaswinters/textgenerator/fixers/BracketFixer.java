@@ -4,9 +4,9 @@ import java.util.OptionalInt;
 import java.util.Stack;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
+import be.thomaswinters.sentence.SentenceUtil;
 
-import be.thomaswinters.sentencemarkov.util.SentenceUtil;
+import org.apache.commons.lang3.StringUtils;
 
 public class BracketFixer implements ISentenceFixer {
 	private final String openBracket;
@@ -53,8 +53,6 @@ public class BracketFixer implements ISentenceFixer {
 	 * Replaces brackets that are non problematic (e.g. balanced) with a space
 	 * 
 	 * @param text
-	 * @param openBracket
-	 * @param closedBracket
 	 * @return
 	 */
 	public String replaceNonProblematicBrackets(String text) {
