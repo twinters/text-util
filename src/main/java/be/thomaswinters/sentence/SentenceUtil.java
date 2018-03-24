@@ -122,6 +122,10 @@ public class SentenceUtil {
 
     }
 
+    public static List<String> getWords(String text) {
+        return Stream.of(text.split(" ")).map(word -> removePunctuations(word)).collect(Collectors.toList());
+    }
+
     public static Collection<String> splitInSentences(String text) {
         OfInt sentenceEnds = getSentenceEnds(text).sorted().iterator();
         List<String> result = new ArrayList<String>();
