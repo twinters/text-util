@@ -1,4 +1,4 @@
-package replace.data;
+package be.thomaswinters.replacement.data;
 
 import com.google.common.collect.ImmutableSet;
 

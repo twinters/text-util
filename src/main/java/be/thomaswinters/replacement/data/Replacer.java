@@ -1,4 +1,4 @@
-package replace.data;
+package be.thomaswinters.replacement.data;
 
 import java.util.Arrays;
 import java.util.List;
