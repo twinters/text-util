@@ -82,6 +82,10 @@ public class SentenceUtil {
         return text.replaceAll("(!|,|:|;|\\.|\\?|\\(|\\))", "");
     }
 
+    public static String removeNonLetters(String text) {
+        return text.replaceAll("\\P{L}", "");
+    }
+
     private static List<String> findNamesInSentence(String sentence) {
         List<String> foundNames = new ArrayList<>();
 
@@ -122,8 +126,12 @@ public class SentenceUtil {
 
     }
 
+    public static Stream<String> splitOnSpaces(String text) {
+        return Stream.of(text.split("\\s"));
+    }
+
     public static List<String> getWords(String text) {
-        return Stream.of(text.split(" ")).map(word -> removePunctuations(word)).collect(Collectors.toList());
+        return splitOnSpaces(text).map(word -> removeNonLetters(word)).collect(Collectors.toList());
     }
 
     public static Collection<String> splitInSentences(String text) {
