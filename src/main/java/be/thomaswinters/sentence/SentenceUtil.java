@@ -82,6 +82,10 @@ public class SentenceUtil {
         return text.replaceAll("(!|,|:|;|\\.|\\?|\\(|\\))", "");
     }
 
+    public static boolean hasOnlyLetters(String text) {
+        return text.chars().allMatch(Character::isLetter);
+    }
+
     public static String removeNonLetters(String text) {
         return text.replaceAll("\\P{L}", "");
     }
