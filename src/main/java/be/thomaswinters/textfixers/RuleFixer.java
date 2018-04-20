@@ -1,4 +1,4 @@
-package be.thomaswinters.textgenerator.fixers;
+package be.thomaswinters.textfixers;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
