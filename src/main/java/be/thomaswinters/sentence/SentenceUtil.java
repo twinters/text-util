@@ -168,7 +168,7 @@ public class SentenceUtil {
         return !input.toLowerCase().equals(input);
     }
 
-    public String removeBetweenBrackets(String input) {
+    public static String removeBetweenBrackets(String input) {
         return input.replaceAll("\\s*\\([^\\)]*\\)\\s*", " ");
     }
 
