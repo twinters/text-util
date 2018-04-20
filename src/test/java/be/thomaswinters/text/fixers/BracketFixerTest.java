@@ -1,4 +1,4 @@
-package be.thomaswinters.textfixers;
+package be.thomaswinters.text.fixers;
 
 import org.junit.BeforeClass;
 import org.junit.Test;

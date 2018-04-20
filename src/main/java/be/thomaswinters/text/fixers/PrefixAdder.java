@@ -1,4 +1,4 @@
-package be.thomaswinters.textfixers;
+package be.thomaswinters.text.fixers;
 
 public class PrefixAdder implements ISentenceFixer {
 

@@ -1,4 +1,4 @@
-package be.thomaswinters.textfixers;
+package be.thomaswinters.text.fixers;
 
 import java.util.OptionalInt;
 import java.util.Stack;

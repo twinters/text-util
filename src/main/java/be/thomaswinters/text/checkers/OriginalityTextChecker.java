@@ -1,9 +1,10 @@
-package be.thomaswinters.textgenerator;
+package be.thomaswinters.text.checkers;
 
 import be.thomaswinters.sentence.SentenceUtil;
 import com.google.common.collect.ImmutableList;
 
 import java.util.Collection;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -11,50 +12,44 @@ import java.util.stream.Collectors;
  *
  * @author Thomas Winters
  */
-public class OriginalityTextGenerator implements ITextGenerator {
+public class OriginalityTextChecker implements Predicate<String> {
 
     private final Collection<String> originalLines;
-    private final ITextGenerator generator;
 
-    public OriginalityTextGenerator(Collection<String> originalLines, ITextGenerator generator) {
+    public OriginalityTextChecker(Collection<String> originalLines) {
         this.originalLines = processOriginalLines(originalLines);
-        this.generator = new ValidityCheckerTextGenerator(generator, this::isOriginal);
     }
 
-    @Override
-    public String generateText() {
-        return generator.generateText();
-    }
 
     /*-********************************************-*
      *  Is Original Checker
      *-********************************************-*/
 
-    protected boolean isOriginal(String text) {
+    @Override
+    public boolean test(String text) {
         String originalityText = processLineForOriginality(text);
-        return !getOriginalLines().stream().anyMatch(e -> e.contains(originalityText));
+        return getOriginalLines().stream().noneMatch(e -> e.contains(originalityText));
     }
 
     /*-********************************************-*/
 
-    public Collection<String> getOriginalLines() {
+    private Collection<String> getOriginalLines() {
         return originalLines;
     }
 
     /*-********************************************-*
      *  Processors
      *-********************************************-*/
-    public static ImmutableList<String> processOriginalLines(Collection<? extends String> originalLines) {
+    private static ImmutableList<String> processOriginalLines(Collection<? extends String> originalLines) {
         return ImmutableList.copyOf(originalLines.stream()
                 // Map for originality check
-                .map(OriginalityTextGenerator::processLineForOriginality)
+                .map(OriginalityTextChecker::processLineForOriginality)
                 // Filter all empty
-                .filter(e -> !e.equals(""))
-                // Collect to a list
-                .collect(Collectors.toList()));
+                .filter(e -> !e.equals("")).iterator());
     }
 
-    public static String processLineForOriginality(String line) {
+
+    private static String processLineForOriginality(String line) {
         return SentenceUtil.removePunctuations(line.replace("\n", " ")).replaceAll("\\s+", " ").toLowerCase().trim();
     }
 
