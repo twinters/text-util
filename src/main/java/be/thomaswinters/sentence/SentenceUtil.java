@@ -163,6 +163,15 @@ public class SentenceUtil {
         return Stream.of(sentence.split(" ")).allMatch(word -> isCapitalized(word));
     }
 
+
+    public static boolean containsCapitalisedLetters(String input) {
+        return !input.toLowerCase().equals(input);
+    }
+
+    public String removeBetweenBrackets(String input) {
+        return input.replaceAll("\\s*\\([^\\)]*\\)\\s*", " ");
+    }
+
     public static String createString(char character, int length) {
         StringBuilder b = new StringBuilder();
         for (int i = 0; i < length; i++) {
