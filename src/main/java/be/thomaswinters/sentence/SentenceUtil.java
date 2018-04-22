@@ -79,7 +79,7 @@ public class SentenceUtil {
     }
 
     public static String removePunctuations(String text) {
-        return text.replaceAll("(!|,|:|;|\\.|\\?|\\(|\\))", "");
+        return text.replaceAll("([!,:;.?()])", "");
     }
 
     public static boolean hasOnlyLetters(String text) {
@@ -119,7 +119,7 @@ public class SentenceUtil {
             start++;
         }
 
-        foundNames = foundNames.stream().map(e -> e.replaceAll("(!|,|:|\\.|\\?|\"|')", ""))
+        foundNames = foundNames.stream().map(e -> e.replaceAll("([!,:.?\"'])", ""))
                 .collect(Collectors.toList());
         return foundNames;
     }

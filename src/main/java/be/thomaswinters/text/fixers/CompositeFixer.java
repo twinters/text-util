@@ -1,25 +1,27 @@
 package be.thomaswinters.text.fixers;
 
+import com.google.common.collect.ImmutableList;
+
 import java.util.Arrays;
 import java.util.List;
-
-import com.google.common.collect.ImmutableList;
+import java.util.function.UnaryOperator;
 
 public class CompositeFixer implements ISentenceFixer {
 
-	private final ImmutableList<ISentenceFixer> fixers;
+    private final ImmutableList<UnaryOperator<String>> fixers;
 
-	public CompositeFixer(List<? extends ISentenceFixer> fixers) {
-		this.fixers = ImmutableList.copyOf(fixers);
-	}
+    public CompositeFixer(List<? extends UnaryOperator<String>> fixers) {
+        this.fixers = ImmutableList.copyOf(fixers);
+    }
 
-	public CompositeFixer(ISentenceFixer... fixers) {
-		this(Arrays.asList(fixers));
-	}
+    @SafeVarargs
+    public CompositeFixer(UnaryOperator<String>... fixers) {
+        this(Arrays.asList(fixers));
+    }
 
-	@Override
-	public String fix(String text) {
-		return fixers.stream().reduce(text, (e, f) -> f.fix(e), (e, f) -> e);
-	}
+    @Override
+    public String fix(String text) {
+        return fixers.stream().reduce(text, (e, f) -> f.apply(e), (e, f) -> e);
+    }
 
 }

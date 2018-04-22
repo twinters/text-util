@@ -21,7 +21,7 @@ public class Replacement {
 
     public Replacement createNew(String newText, Replacer replacementDone, int amountOfTimes) {
         if (amountOfTimes > 0) {
-            Builder<Replacer> b = ImmutableMultiset.<Replacer>builder();
+            Builder<Replacer> b = ImmutableMultiset.builder();
             b.addAll(this.replacements);
             b.addCopies(replacementDone, amountOfTimes);
             return new Replacement(newText, b.build());
