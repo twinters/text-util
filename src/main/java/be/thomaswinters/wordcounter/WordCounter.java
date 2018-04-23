@@ -6,27 +6,35 @@ import com.google.common.collect.Multiset.Entry;
 import com.google.common.collect.Multisets;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.function.Function;
+import java.util.Collections;
 import java.util.stream.Stream;
 
 public class WordCounter {
 
     public static class WordCounterBuilder {
-        private final Builder<String> b;
+        private final Builder<String> b = ImmutableMultiset.builder();
+        private final WordConverter converter;
 
-        public WordCounterBuilder(Collection<? extends String> lines) {
-            b = ImmutableMultiset.builder();
+        public WordCounterBuilder(WordConverter converter, Collection<? extends String> lines) {
+            this.converter = converter;
             add(lines);
         }
 
+        public WordCounterBuilder(WordConverter converter) {
+            this(converter, new ArrayList<>());
+        }
+
         public WordCounterBuilder() {
-            this(new ArrayList<>());
+            this(new WordConverter());
         }
 
         public void add(Collection<? extends String> lines) {
-            lines.stream().flatMap(WordCounter::convertWords).forEach(e -> b.add(e));
+            lines.stream().flatMap(converter::convertWords).forEach(b::add);
+        }
+
+        public void addWeighted(Collection<? extends String> lines, int weight) {
+            lines.stream().flatMap(converter::convertWords).forEach(word -> b.addCopies(word, weight));
         }
 
         public void addWord(String word, int count) {
@@ -34,7 +42,7 @@ public class WordCounter {
         }
 
         public void addAndConvertWord(String word, int count) {
-            addWord(WordCounter.convertWord(word), count);
+            addWord(converter.convertWord(word), count);
         }
 
         public ImmutableMultiset<String> buildSet() {
@@ -42,56 +50,39 @@ public class WordCounter {
         }
 
         public WordCounter build() {
-            return new WordCounter(Multisets.copyHighestCountFirst(b.build()));
+            return new WordCounter(Multisets.copyHighestCountFirst(b.build()), converter);
         }
 
-        public static WordCounter filterMininum(WordCounter wc, int minAmount) {
-            WordCounterBuilder b = new WordCounterBuilder();
-            wc.getWordCount().entrySet().stream().filter(e -> e.getCount() > minAmount)
-                    .forEach(e -> b.addWord(e.getElement(), e.getCount()));
-            return b.build();
-        }
 
     }
 
     private final ImmutableMultiset<String> wordCount;
-    private static final boolean ignoreCase = true;
-    private static final boolean ignoreNonAlphabetics = true;
+    private final WordConverter converter;
 
     /*-********************************************-*
      *  Constructor
      *-********************************************-*/
-    private WordCounter(ImmutableMultiset<String> wordCount) {
+    private WordCounter(ImmutableMultiset<String> wordCount, WordConverter converter) {
         this.wordCount = wordCount;
+        this.converter = converter;
+    }
+
+    private WordCounter(ImmutableMultiset<String> wordCount) {
+        this(wordCount, new WordConverter());
     }
 
     public WordCounter(Collection<? extends String> lines) {
-        this(new WordCounterBuilder(lines).buildSet());
-        // Builder<String> b = ImmutableMultiset.builder();
-        // for (String line : lines) {
-        // convertWords(line).forEach(e -> b.add(e));
-        // }
-        //
-        // wordCount = Multisets.copyHighestCountFirst(b.build());
+        this(new WordCounterBuilder(new WordConverter(), lines).buildSet());
     }
 
     public WordCounter(String line) {
-        this(Arrays.asList(line));
+        this(Collections.singletonList(line));
     }
     /*-********************************************-*/
 
     /*-********************************************-*
      *  Comparing
      *-********************************************-*/
-    public static Stream<String> convertWords(String line) {
-        return Stream.of(line.split(" ")).filter(e -> e.trim().length() > 0).map(WordCounter::convertWord);
-    }
-
-    public static String convertWord(String word) {
-        word = ignoreCase ? word.toLowerCase() : word;
-        word = ignoreNonAlphabetics ? word.replaceAll("[^a-zA-Z]", "") : word;
-        return word;
-    }
 
     public int getAmountOfSameWordsAs(WordCounter other) {
         int total = 0;
@@ -105,22 +96,6 @@ public class WordCounter {
         return total;
     }
 
-    public double getRelativeAmountOfSameWordsAs(WordCounter other, WordCounter relativeTo,
-                                                 Function<Double, Function<Double, Double>> countBest) {
-        double total = 0;
-
-        for (String word : other.getWordCount().elementSet()) {
-            if (wordCount.contains(word)) {
-
-                double sameOccurrences = countBest.apply((double) getCount(word)).apply((double) other.getCount(word));
-                double corpusOccurences = Math.pow(relativeTo.getCount(word), 2);
-
-                total += (sameOccurrences) / Math.max(1, corpusOccurences);
-            }
-        }
-
-        return total;
-    }
 
     /**
      * Calculates sum of products of the frequencies of words that occur in both,
@@ -150,13 +125,7 @@ public class WordCounter {
 
     }
 
-    public double getRelativeAmountOfSameWordsAs(WordCounter other, WordCounter relativeTo) {
-        return getRelativeAmountOfSameWordsAs(other, relativeTo, e -> f -> Math.min(e, f));
-    }
 
-    public double getRelativeAmountOfSameMaxWordsAs(WordCounter other, WordCounter relativeTo) {
-        return getRelativeAmountOfSameWordsAs(other, relativeTo, e -> f -> Math.max(e, f));
-    }
     /*-********************************************-*/
 
     /*-********************************************-*
@@ -167,11 +136,7 @@ public class WordCounter {
     }
 
     public int getCount(String word) {
-        return wordCount.count(convertWord(word));
-    }
-
-    public boolean isIgnoreCase() {
-        return ignoreCase;
+        return wordCount.count(converter.convertWord(word));
     }
 
     public int getSize() {
@@ -199,7 +164,7 @@ public class WordCounter {
     }
 
     public boolean containsAny(String line) {
-        return containsAny(convertWords(line));
+        return containsAny(converter.convertWords(line));
     }
 
     /*-********************************************-*/
@@ -233,5 +198,15 @@ public class WordCounter {
         return "WordCounter [" + wordCount + "]";
     }
 
+    public static WordCounterBuilder builder() {
+        return new WordCounterBuilder();
+    }
+
+    public static WordCounter filterMininum(WordCounter wc, int minAmount) {
+        WordCounterBuilder b = new WordCounterBuilder();
+        wc.getWordCount().entrySet().stream().filter(e -> e.getCount() > minAmount)
+                .forEach(e -> b.addWord(e.getElement(), e.getCount()));
+        return b.build();
+    }
 
 }

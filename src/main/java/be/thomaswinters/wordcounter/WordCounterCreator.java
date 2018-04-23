@@ -1,8 +1,6 @@
 package be.thomaswinters.wordcounter;
 
-import be.thomaswinters.wordcounter.WordCounter;
 import be.thomaswinters.wordcounter.WordCounter.WordCounterBuilder;
-import be.thomaswinters.wordcounter.WordCounterIO;
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableSet;
 
@@ -52,7 +50,7 @@ public class WordCounterCreator {
         WordCounter wc = createWordCounter();
 
 
-        WordCounterIO.outputTo(WordCounterBuilder.filterMininum(wc, 2), outputFile);
+        WordCounterIO.outputTo(WordCounter.filterMininum(wc, 2), outputFile);
 
     }
 
