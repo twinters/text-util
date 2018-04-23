@@ -1,11 +1,11 @@
 package be.thomaswinters.text.checkers;
 
 import be.thomaswinters.sentence.SentenceUtil;
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 
 import java.util.Collection;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Checks if the generated text is original.
@@ -16,8 +16,12 @@ public class OriginalityTextChecker implements Predicate<String> {
 
     private final Collection<String> originalLines;
 
-    public OriginalityTextChecker(Collection<String> originalLines) {
+    public OriginalityTextChecker(Stream<String> originalLines) {
         this.originalLines = processOriginalLines(originalLines);
+    }
+
+    public OriginalityTextChecker(Collection<String> originalLines) {
+        this(originalLines.stream());
     }
 
 
@@ -28,7 +32,10 @@ public class OriginalityTextChecker implements Predicate<String> {
     @Override
     public boolean test(String text) {
         String originalityText = processLineForOriginality(text);
-        return getOriginalLines().stream().noneMatch(e -> e.contains(originalityText));
+        return !originalLines.contains(text)
+                && originalLines
+                .stream()
+                .noneMatch(e -> e.contains(originalityText));
     }
 
     /*-********************************************-*/
@@ -40,12 +47,14 @@ public class OriginalityTextChecker implements Predicate<String> {
     /*-********************************************-*
      *  Processors
      *-********************************************-*/
-    private static ImmutableList<String> processOriginalLines(Collection<? extends String> originalLines) {
-        return ImmutableList.copyOf(originalLines.stream()
-                // Map for originality check
-                .map(OriginalityTextChecker::processLineForOriginality)
-                // Filter all empty
-                .filter(e -> !e.equals("")).iterator());
+    private static ImmutableSet<String> processOriginalLines(Stream<? extends String> originalLines) {
+        return ImmutableSet.copyOf(
+                originalLines
+                        // Map for originality check
+                        .map(OriginalityTextChecker::processLineForOriginality)
+                        // Filter all empty
+                        .filter(e -> !e.equals(""))
+                        .iterator());
     }
 
 
