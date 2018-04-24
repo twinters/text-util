@@ -1,6 +1,6 @@
 package be.thomaswinters.wordcounter;
 
-import be.thomaswinters.wordcounter.WordCounter.WordCounterBuilder;
+import be.thomaswinters.wordcounter.WordCounter.Builder;
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableSet;
 
@@ -36,7 +36,7 @@ public class WordCounterCreator {
     }
 
     public WordCounter createWordCounter() {
-        WordCounterBuilder b = new WordCounterBuilder();
+        Builder b = new Builder();
 
         for (File file : files) {
             List<String> lines = readLines(file);

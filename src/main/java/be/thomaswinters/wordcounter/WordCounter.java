@@ -1,7 +1,6 @@
 package be.thomaswinters.wordcounter;
 
 import com.google.common.collect.ImmutableMultiset;
-import com.google.common.collect.ImmutableMultiset.Builder;
 import com.google.common.collect.Multiset.Entry;
 import com.google.common.collect.Multisets;
 
@@ -12,20 +11,20 @@ import java.util.stream.Stream;
 
 public class WordCounter {
 
-    public static class WordCounterBuilder {
-        private final Builder<String> b = ImmutableMultiset.builder();
+    public static class Builder {
+        private final ImmutableMultiset.Builder b = ImmutableMultiset.builder();
         private final WordConverter converter;
 
-        public WordCounterBuilder(WordConverter converter, Collection<? extends String> lines) {
+        public Builder(WordConverter converter, Collection<? extends String> lines) {
             this.converter = converter;
             add(lines);
         }
 
-        public WordCounterBuilder(WordConverter converter) {
+        public Builder(WordConverter converter) {
             this(converter, new ArrayList<>());
         }
 
-        public WordCounterBuilder() {
+        public Builder() {
             this(new WordConverter());
         }
 
@@ -35,6 +34,10 @@ public class WordCounter {
 
         public void addWeighted(Collection<? extends String> lines, int weight) {
             lines.stream().flatMap(converter::convertWords).forEach(word -> b.addCopies(word, weight));
+        }
+
+        public void addWeighted(String message, int weight) {
+            addWeighted(Collections.singleton(message), weight);
         }
 
         public void addWord(String word, int count) {
@@ -72,7 +75,7 @@ public class WordCounter {
     }
 
     public WordCounter(Collection<? extends String> lines) {
-        this(new WordCounterBuilder(new WordConverter(), lines).buildSet());
+        this(new Builder(new WordConverter(), lines).buildSet());
     }
 
     public WordCounter(String line) {
@@ -198,12 +201,12 @@ public class WordCounter {
         return "WordCounter [" + wordCount + "]";
     }
 
-    public static WordCounterBuilder builder() {
-        return new WordCounterBuilder();
+    public static Builder builder() {
+        return new Builder();
     }
 
     public static WordCounter filterMininum(WordCounter wc, int minAmount) {
-        WordCounterBuilder b = new WordCounterBuilder();
+        Builder b = new Builder();
         wc.getWordCount().entrySet().stream().filter(e -> e.getCount() > minAmount)
                 .forEach(e -> b.addWord(e.getElement(), e.getCount()));
         return b.build();

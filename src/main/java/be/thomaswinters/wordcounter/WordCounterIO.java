@@ -1,6 +1,6 @@
 package be.thomaswinters.wordcounter;
 
-import be.thomaswinters.wordcounter.WordCounter.WordCounterBuilder;
+import be.thomaswinters.wordcounter.WordCounter.Builder;
 import com.google.common.base.Charsets;
 
 import java.io.File;
@@ -20,8 +20,8 @@ public class WordCounterIO {
     }
 
     public static WordCounter read(File from) throws IOException {
-        WordCounterBuilder b = new WordCounterBuilder();
-        Files.readAllLines(from.toPath()).stream()
+        Builder b = new Builder();
+        Files.readAllLines(from.toPath())
                 .forEach(e -> b.addWord(e.split("\t")[0], Integer.parseInt(e.split("\t")[1])));
         return b.build();
     }
