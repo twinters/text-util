@@ -21,6 +21,7 @@ public class WordConverter {
     }
 
     public String convertWord(String word) {
+        assert !word.contains(" ");
         word = ignoreCase ? word.toLowerCase() : word;
         word = ignoreNonAlphabetics ? word.replaceAll("[^a-zA-Z]", "") : word;
         return word;
