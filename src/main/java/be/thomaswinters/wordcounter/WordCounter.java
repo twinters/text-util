@@ -33,7 +33,9 @@ public class WordCounter {
         }
 
         public void addWeighted(Collection<? extends String> lines, int weight) {
-            lines.stream().flatMap(converter::convertWords).forEach(word -> b.addCopies(word, weight));
+            lines.stream().flatMap(converter::convertWords)
+                    .filter(word -> word.length() > 0)
+                    .forEach(word -> b.addCopies(word, weight));
         }
 
         public void addWeighted(String message, int weight) {

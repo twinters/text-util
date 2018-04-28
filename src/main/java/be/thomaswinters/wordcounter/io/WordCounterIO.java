@@ -1,5 +1,6 @@
-package be.thomaswinters.wordcounter;
+package be.thomaswinters.wordcounter.io;
 
+import be.thomaswinters.wordcounter.WordCounter;
 import be.thomaswinters.wordcounter.WordCounter.Builder;
 import com.google.common.base.Charsets;
 

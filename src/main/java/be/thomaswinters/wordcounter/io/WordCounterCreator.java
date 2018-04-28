@@ -1,5 +1,6 @@
-package be.thomaswinters.wordcounter;
+package be.thomaswinters.wordcounter.io;
 
+import be.thomaswinters.wordcounter.WordCounter;
 import be.thomaswinters.wordcounter.WordCounter.Builder;
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableSet;
@@ -55,7 +56,9 @@ public class WordCounterCreator {
     }
 
     public static void main(String[] args) throws IOException {
-        new WordCounterCreator(Arrays.asList(new File("textfiles-com").listFiles())).create(new File("output.txt"));
+        new WordCounterCreator(
+                Arrays.asList(new File("textfiles-com").listFiles()))
+                .create(new File("output.txt"));
     }
 
 }
