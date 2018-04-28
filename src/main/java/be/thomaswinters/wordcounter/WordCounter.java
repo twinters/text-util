@@ -216,11 +216,11 @@ public class WordCounter {
         return b.build();
     }
 
-    public static WordCounter filterWords(WordCounter wc, Collection<String> words) {
+    public static WordCounter filterWords(WordCounter wc, Collection<String> blacklist) {
         Builder b = new Builder();
         wc.getWordCount().entrySet()
                 .stream()
-                .filter(words::contains)
+                .filter(e -> !blacklist.contains(e))
                 .forEach(e -> b.addWord(e.getElement(), e.getCount()));
         return b.build();
     }
