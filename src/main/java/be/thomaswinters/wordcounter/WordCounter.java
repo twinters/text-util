@@ -209,7 +209,7 @@ public class WordCounter {
 
     public static WordCounter filterMininum(WordCounter wc, int minAmount) {
         Builder b = new Builder();
-        wc.getWordCount().entrySet().stream().filter(e -> e.getCount() > minAmount)
+        wc.getWordCount().entrySet().stream().filter(e -> e.getCount() >= minAmount)
                 .forEach(e -> b.addWord(e.getElement(), e.getCount()));
         return b.build();
     }
