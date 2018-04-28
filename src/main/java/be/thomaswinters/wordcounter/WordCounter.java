@@ -200,7 +200,7 @@ public class WordCounter {
 
     @Override
     public String toString() {
-        return "WordCounter [" + wordCount + "]";
+        return "WordCounter " + wordCount;
     }
 
     public static Builder builder() {
@@ -220,7 +220,7 @@ public class WordCounter {
         Builder b = new Builder();
         wc.getWordCount().entrySet()
                 .stream()
-                .filter(e -> !blacklist.contains(e))
+                .filter(e -> !blacklist.contains(e.getElement()))
                 .forEach(e -> b.addWord(e.getElement(), e.getCount()));
         return b.build();
     }
