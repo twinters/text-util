@@ -135,7 +135,11 @@ public class SentenceUtil {
     }
 
     public static List<String> getWords(String text) {
-        return splitOnSpaces(text).map(word -> removeNonLetters(word)).collect(Collectors.toList());
+        return getWordsStream(text).collect(Collectors.toList());
+    }
+
+    public static Stream<String> getWordsStream(String text) {
+        return splitOnSpaces(text).map(word -> removeNonLetters(word));
     }
 
     public static Collection<String> splitInSentences(String text) {
