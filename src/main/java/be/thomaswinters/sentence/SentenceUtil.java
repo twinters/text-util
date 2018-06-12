@@ -139,7 +139,7 @@ public class SentenceUtil {
     }
 
     public static Stream<String> getWordsStream(String text) {
-        return splitOnSpaces(text).map(word -> removeNonLetters(word));
+        return splitOnSpaces(text).map(SentenceUtil::removeNonLetters);
     }
 
     public static Collection<String> splitInSentences(String text) {
