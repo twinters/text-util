@@ -38,8 +38,11 @@ public class SentenceUtil {
     // }
 
     private static IntStream getSentenceEnds(String text) {
-        return Stream.of(text.indexOf('.'), text.indexOf('!'), text.indexOf('?')).filter(e -> e >= 0)
-                .map(e -> fixSentenceEnd(e, text)).mapToInt(e -> e);
+        return Stream.of(text.indexOf('.'), text.indexOf('!'), text.indexOf('?'))
+                .filter(e -> e >= 0)
+                .map(e -> fixSentenceEnd(e, text))
+                .filter(e -> e+1 >= text.length() || Character.isSpaceChar(text.charAt(e+1)))
+                .mapToInt(e -> e);
     }
 
     /**
@@ -64,15 +67,6 @@ public class SentenceUtil {
 
     }
 
-    public static List<String> splitIntoSentences(String text) {
-        ArrayList<String> result = new ArrayList<>();
-        OptionalInt firstEnd;
-        while ((firstEnd = getFirstSentenceEndIndex(text)).isPresent()) {
-            result.add(text.substring(0, firstEnd.getAsInt() + 1).trim());
-            text = text.substring(firstEnd.getAsInt() + 1);
-        }
-        return result;
-    }
 
     public static boolean isPunctuation(char ch) {
         return ch == '.' || ch == '!' || ch == ',' || ch == '?' || ch == ';';
@@ -142,6 +136,16 @@ public class SentenceUtil {
         return splitOnSpaces(text).map(SentenceUtil::removeNonLetters);
     }
 
+    public static List<String> splitIntoSentences(String text) {
+        ArrayList<String> result = new ArrayList<>();
+        OptionalInt firstEnd;
+        while ((firstEnd = getFirstSentenceEndIndex(text)).isPresent()) {
+            result.add(text.substring(0, firstEnd.getAsInt() + 1).trim());
+            text = text.substring(firstEnd.getAsInt() + 1);
+        }
+        return result;
+    }
+
     public static Collection<String> splitInSentences(String text) {
         OfInt sentenceEnds = getSentenceEnds(text).sorted().iterator();
         List<String> result = new ArrayList<String>();
@@ -164,7 +168,7 @@ public class SentenceUtil {
     }
 
     public static boolean isCapitalizedSentence(String sentence) {
-        return Stream.of(sentence.split(" ")).allMatch(word -> isCapitalized(word));
+        return Stream.of(sentence.split(" ")).allMatch(SentenceUtil::isCapitalized);
     }
 
 
@@ -196,6 +200,13 @@ public class SentenceUtil {
     public static String replaceCharacters(String text, int location, String toReplace, char replacementCharacter) {
         return text.substring(0, location) + createString(replacementCharacter, toReplace.length())
                 + text.substring(location + toReplace.length(), text.length());
+    }
+
+    public static String getFirstSentence(String text) {
+//        OptionalInt firstSentenceEnd = getFirstSentenceEndIndex(text);
+//        return firstSentenceEnd.isPresent() ? text.substring(0,firstSentenceEnd.getAsInt()) : text;
+        List<String> splitted = splitIntoSentences(text);
+        return splitted.isEmpty() ? text : splitted.get(0);
     }
 
 }
