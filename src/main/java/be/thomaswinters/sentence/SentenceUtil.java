@@ -127,6 +127,9 @@ public class SentenceUtil {
     public static Stream<String> splitOnSpaces(String text) {
         return Stream.of(text.split("\\s"));
     }
+    public static String joinWithSpaces(List<String> strings) {
+        return strings.stream().collect(Collectors.joining(" "));
+    }
 
     public static List<String> getWords(String text) {
         return getWordsStream(text).collect(Collectors.toList());
