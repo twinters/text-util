@@ -20,8 +20,22 @@ public class DataLoader {
         return readLinesStream(url).collect(Collectors.toList());
     }
 
-
+    public static List<String> readLinesUnchecked(URL url) {
+        try {
+            return readLines(url);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
     public static List<String> readLines(String s) throws IOException {
         return readLines(ClassLoader.getSystemResource(s));
+    }
+
+    public static List<String> readLinesUnchecked(String s) {
+        try {
+            return readLines(ClassLoader.getSystemResource(s));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
