@@ -41,7 +41,7 @@ public class SentenceUtil {
         return Stream.of(text.indexOf('.'), text.indexOf('!'), text.indexOf('?'))
                 .filter(e -> e >= 0)
                 .map(e -> fixSentenceEnd(e, text))
-                .filter(e -> e+1 >= text.length() || Character.isSpaceChar(text.charAt(e+1)))
+                .filter(e -> e + 1 >= text.length() || Character.isSpaceChar(text.charAt(e + 1)))
                 .mapToInt(e -> e);
     }
 
@@ -127,6 +127,7 @@ public class SentenceUtil {
     public static Stream<String> splitOnSpaces(String text) {
         return Stream.of(text.split("\\s"));
     }
+
     public static String joinWithSpaces(List<String> strings) {
         return strings.stream().collect(Collectors.joining(" "));
     }
@@ -212,4 +213,15 @@ public class SentenceUtil {
         return splitted.isEmpty() ? text : splitted.get(0);
     }
 
+    public static String decapitalise(String s) {
+        if (s.length() > 1) {
+            if (s.length() > 2
+                    // If the first word does not have multiple capitalised letters in the front, as this is usually
+                    // An abbreviation of some sort
+                    && !s.substring(0, 2).toUpperCase().equals(s.substring(0, 2))) {
+                return s.substring(0, 1).toLowerCase() + s.substring(1);
+            }
+        }
+        return s;
+    }
 }
