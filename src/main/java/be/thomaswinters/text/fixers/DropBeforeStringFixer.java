@@ -5,7 +5,7 @@ import java.util.Optional;
 import java.util.Set;
 
 /**
- * Drops everything from the string before the given substring
+ * Drops everything from the string before the given substring if the text contains that string
  */
 public class DropBeforeStringFixer implements ISentenceFixer {
     private final Set<String> dropUntilThisString;
