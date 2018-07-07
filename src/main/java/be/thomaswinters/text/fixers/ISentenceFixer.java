@@ -9,4 +9,8 @@ public interface ISentenceFixer extends UnaryOperator<String> {
     default String apply(String text) {
         return fix(text);
     }
+
+    default ISentenceFixer andThen(ISentenceFixer fixer) {
+        return input -> fixer.fix(this.fix(input));
+    }
 }
