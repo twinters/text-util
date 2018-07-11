@@ -12,9 +12,9 @@ public class DutchDefinitionSimplifier implements ISentenceFixer {
             new Replacer("van of ", "", true, false),
             new Replacer("~ aan: ", "", true, false),
             new Replacer("~", "", true, false),
-            new Replacer("~m; ", "", true, false),
-            new Replacer("~v; ", "", true, false),
-            new Replacer("~o; ", "", true, false)
+            new Replacer("~?m; ", "", true, false),
+            new Replacer("~?v; ", "", true, false),
+            new Replacer("~?o; ", "", true, false)
     ));
 
 

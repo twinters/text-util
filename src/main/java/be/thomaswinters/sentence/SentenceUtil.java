@@ -131,6 +131,9 @@ public class SentenceUtil {
     public static String joinWithSpaces(List<String> strings) {
         return strings.stream().collect(Collectors.joining(" "));
     }
+    public static String joinWithEnters(List<String> strings) {
+        return strings.stream().collect(Collectors.joining("\n"));
+    }
 
     public static List<String> getWords(String text) {
         return getWordsStream(text).collect(Collectors.toList());
