@@ -11,10 +11,7 @@ public class DutchDefinitionSimplifier implements ISentenceFixer {
             new Replacer("met betrekking tot of ", "", true, false),
             new Replacer("van of ", "", true, false),
             new Replacer("~ aan: ", "", true, false),
-            new Replacer("~", "", true, false),
-            new Replacer("~?m; ", "", true, false),
-            new Replacer("~?v; ", "", true, false),
-            new Replacer("~?o; ", "", true, false)
+            new Replacer("~", "", true, false)
     ));
 
 
@@ -26,6 +23,11 @@ public class DutchDefinitionSimplifier implements ISentenceFixer {
                 .replaceAll("\\[.*] ?", "")
                 .replaceAll(" -.*- ", " ")
                 .replaceAll(" {2}", " ")
+                .replaceAll("~?m;? ", "")
+                .replaceAll("~?v;? ", "")
+                .replaceAll("~?o;? ", "")
+                .replaceAll("en ?\\/ ?of", "of")
+                .replaceAll(".* [mvo] ", "")
                 // Better to replace beforehand with original word:
                 .replaceAll(".*~.*: ?", "");
 
