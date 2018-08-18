@@ -153,7 +153,7 @@ public class SentenceUtil {
         return result;
     }
 
-    public static Collection<String> splitInSentences(String text) {
+    public static List<String> splitInSentences(String text) {
         OfInt sentenceEnds = getSentenceEnds(text).sorted().iterator();
         List<String> result = new ArrayList<String>();
 
