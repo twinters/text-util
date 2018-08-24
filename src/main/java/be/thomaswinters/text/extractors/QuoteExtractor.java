@@ -1,34 +1,33 @@
 package be.thomaswinters.text.extractors;
 
+import be.thomaswinters.sentence.SentenceUtil;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class QuoteExtractor {
-    private final String quoteRegex;
+    private static final String quoteRegex = "([\"'])(\\\\?.)*?\\1";
+    private final int minNumberWordsInQuote;
     private final Pattern quotePattern;
 
     public QuoteExtractor(int minNumberWordsInQuote) {
-        quoteRegex = createQuoteRegex(minNumberWordsInQuote);
         quotePattern = Pattern.compile(quoteRegex);
-    }
-
-    /**
-     * Creates a regex that recognises a certain amount of words
-     */
-    private static String createQuoteRegex(int amountOfWords) {
-        return "\\\"(.+\\s+){" + (amountOfWords - 1) + ",}.+\\\"";
+        this.minNumberWordsInQuote = minNumberWordsInQuote;
     }
 
     /**
      * Finds and returns all matches found by a particular Matcher object
      */
-    private static List<String> getAllMatches(Matcher m) {
+    private List<String> getAllMatches(Matcher m) {
         m.reset();
         List<String> allMatches = new ArrayList<>();
         while (m.find()) {
-            allMatches.add(m.group());
+            String result = m.group();
+            if (SentenceUtil.splitOnSpaces(result).count() >= this.minNumberWordsInQuote) {
+                allMatches.add(m.group());
+            }
         }
         return allMatches;
     }
