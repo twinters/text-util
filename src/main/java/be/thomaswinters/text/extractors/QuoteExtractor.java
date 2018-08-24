@@ -9,12 +9,15 @@ import java.util.regex.Pattern;
 
 public class QuoteExtractor {
     private static final String quoteRegex = "([\"'])(\\\\?.)*?\\1";
+    private static final Pattern quotePattern = Pattern.compile(quoteRegex);
     private final int minNumberWordsInQuote;
-    private final Pattern quotePattern;
 
     public QuoteExtractor(int minNumberWordsInQuote) {
-        quotePattern = Pattern.compile(quoteRegex);
         this.minNumberWordsInQuote = minNumberWordsInQuote;
+    }
+
+    public QuoteExtractor() {
+        this(0);
     }
 
     /**
