@@ -24,7 +24,7 @@ public class QuoteExtractor {
     /**
      * Finds and returns all matches found by a particular Matcher object
      */
-    public static List<String> getAllMatches(Matcher m) {
+    private static List<String> getAllMatches(Matcher m) {
         m.reset();
         List<String> allMatches = new ArrayList<>();
         while (m.find()) {
