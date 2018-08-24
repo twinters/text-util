@@ -1,16 +1,18 @@
 package be.thomaswinters.text.fixers;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 
 public class BracketFixerTest {
 
     private static BracketFixer bf;
 
-    @BeforeClass
-    public static void setup() {
+    @BeforeEach
+    public void setup() {
         bf = new BracketFixer("(", ")");
     }
 
