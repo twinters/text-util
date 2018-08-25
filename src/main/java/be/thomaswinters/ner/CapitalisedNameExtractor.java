@@ -10,11 +10,16 @@ import java.util.stream.Stream;
 public class CapitalisedNameExtractor {
 
     public List<String> findNames(String text) {
+        return findNamesStream(text)
+                .collect(Collectors.toList());
+
+    }
+
+    public Stream<String> findNamesStream(String text) {
         return SentenceUtil.splitInSentences(text)
                 .stream()
                 .flatMap(e -> Stream.of(e.split("\n")))
-                .flatMap(e -> findNamesInSentence(e).stream())
-                .collect(Collectors.toList());
+                .flatMap(e -> findNamesInSentence(e).stream());
 
     }
 
