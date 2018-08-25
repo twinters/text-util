@@ -12,6 +12,7 @@ public class CapitalisedNameExtractor {
     public List<String> findNames(String text) {
         return SentenceUtil.splitInSentences(text)
                 .stream()
+                .flatMap(e -> Stream.of(e.split("\n")))
                 .flatMap(e -> findNamesInSentence(e).stream())
                 .collect(Collectors.toList());
 

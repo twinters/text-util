@@ -20,5 +20,7 @@ class CapitalisedNameExtractorTest {
     public void test_name_extraction() {
         assertEquals(Arrays.asList("Thomas Winters", "Testy McTestface"),
                 capitalisedNameExtractor.findNames("Hallo ik ben Thomas Winters en dit is Testy McTestface."));
+        assertEquals(Arrays.asList("Thomas Winters", "Testy"),
+                capitalisedNameExtractor.findNames("Hallo ik ben Thomas Winters en dit is Testy\nMcTestFace."));
     }
 }
