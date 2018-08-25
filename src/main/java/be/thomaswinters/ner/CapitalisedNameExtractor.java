@@ -24,9 +24,9 @@ public class CapitalisedNameExtractor {
 
         int start = 1;
         // Add first capitalized words only if second word is capitalized
-        if (words.size() >= 2 && isCapitalized(words.get(0)) && isCapitalized(words.get(1))) {
+        if (words.size() >= 2 && isPotentialName(words.get(0)) && isPotentialName(words.get(1))) {
             StringBuilder name = new StringBuilder(words.get(0));
-            while (start < words.size() && isCapitalized(words.get(start))) {
+            while (start < words.size() && isPotentialName(words.get(start))) {
                 name.append(" ").append(words.get(start));
                 start++;
             }
@@ -34,10 +34,10 @@ public class CapitalisedNameExtractor {
         }
 
         while (start < words.size()) {
-            if (isCapitalized(words.get(start))) {
+            if (isPotentialName(words.get(start))) {
                 StringBuilder name = new StringBuilder(words.get(start));
                 start++;
-                while (start < words.size() && isCapitalized(words.get(start))) {
+                while (start < words.size() && isPotentialName(words.get(start))) {
                     name.append(" ").append(words.get(start));
                     start++;
                 }
@@ -53,7 +53,7 @@ public class CapitalisedNameExtractor {
         return foundNames;
     }
 
-    private boolean isCapitalized(String word) {
+    private boolean isPotentialName(String word) {
         return SentenceUtil.isCapitalized(word);
     }
 }
