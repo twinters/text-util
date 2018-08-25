@@ -1,5 +1,7 @@
 package be.thomaswinters.sentence;
 
+import be.thomaswinters.ner.CapitalisedNameExtractor;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -10,6 +12,15 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class SentenceUtil {
+    private static final CapitalisedNameExtractor capitalisedNameExtractor = new CapitalisedNameExtractor();
+
+    // private static OptionalInt fixSentenceEnd(OptionalInt end, String text) {
+    // if (!end.isPresent()) {
+    // return end;
+    // }
+    // return fixSentenceEnd(end.getAsInt());
+    // }
+
     private static int fixSentenceEnd(int end, String text) {
         // Check end accolade
         int index = end;
@@ -29,13 +40,6 @@ public class SentenceUtil {
         }
         return index;
     }
-
-    // private static OptionalInt fixSentenceEnd(OptionalInt end, String text) {
-    // if (!end.isPresent()) {
-    // return end;
-    // }
-    // return fixSentenceEnd(end.getAsInt());
-    // }
 
     private static IntStream getSentenceEnds(String text) {
         return Stream.of(text.indexOf('.'), text.indexOf('!'), text.indexOf('?'))
@@ -67,7 +71,6 @@ public class SentenceUtil {
 
     }
 
-
     public static boolean isPunctuation(char ch) {
         return ch == '.' || ch == '!' || ch == ',' || ch == '?' || ch == ';';
     }
@@ -84,46 +87,6 @@ public class SentenceUtil {
         return text.replaceAll("\\P{L}", "");
     }
 
-    private static List<String> findNamesInSentence(String sentence) {
-        List<String> foundNames = new ArrayList<>();
-
-        List<String> words = Stream.of(sentence.split(" ")).collect(Collectors.toList());
-
-        int start = 1;
-        // Add first capitalized words only if second word is capitalized
-        if (words.size() >= 2 && isCapitalized(words.get(0)) && isCapitalized(words.get(1))) {
-            String name = words.get(0);
-            while (start < words.size() && isCapitalized(words.get(start))) {
-                name += " " + words.get(start);
-                start++;
-            }
-            foundNames.add(name);
-        }
-
-        while (start < words.size()) {
-            if (isCapitalized(words.get(start))) {
-                String name = words.get(start);
-                start++;
-                while (start < words.size() && isCapitalized(words.get(start))) {
-                    name += " " + words.get(start);
-                    start++;
-                }
-                foundNames.add(name);
-            }
-            start++;
-        }
-
-        foundNames = foundNames.stream().map(e -> e.replaceAll("([!,:.?\"'])", ""))
-                .collect(Collectors.toList());
-        return foundNames;
-    }
-
-    public static List<String> findNames(String text) {
-        return splitInSentences(text).stream().flatMap(e -> SentenceUtil.findNamesInSentence(e).stream())
-                .collect(Collectors.toList());
-
-    }
-
     public static Stream<String> splitOnSpaces(String text) {
         return Stream.of(text.split("\\s"));
     }
@@ -131,6 +94,7 @@ public class SentenceUtil {
     public static String joinWithSpaces(List<String> strings) {
         return strings.stream().collect(Collectors.joining(" "));
     }
+
     public static String joinWithEnters(List<String> strings) {
         return strings.stream().collect(Collectors.joining("\n"));
     }
@@ -177,7 +141,6 @@ public class SentenceUtil {
     public static boolean isCapitalizedSentence(String sentence) {
         return Stream.of(sentence.split(" ")).allMatch(SentenceUtil::isCapitalized);
     }
-
 
     public static boolean containsCapitalisedLetters(String input) {
         return !input.toLowerCase().equals(input);
@@ -226,5 +189,9 @@ public class SentenceUtil {
             }
         }
         return s;
+    }
+
+    public static Collection<String> findNames(String text) {
+        return capitalisedNameExtractor.findNames(text);
     }
 }
