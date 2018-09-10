@@ -1,10 +1,13 @@
 package be.thomaswinters.util;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -27,6 +30,7 @@ public class DataLoader {
             throw new RuntimeException(e);
         }
     }
+
     public static List<String> readLines(String s) throws IOException {
         return readLines(ClassLoader.getSystemResource(s));
     }
@@ -38,4 +42,26 @@ public class DataLoader {
             throw new RuntimeException(e);
         }
     }
+
+    public static List<File> getResourceFolderFiles(String folder) {
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        URL url = loader.getResource(folder);
+        assert url != null;
+        String path = url.getPath();
+        return Arrays.asList(Objects.requireNonNull(new File(path).listFiles()));
+    }
+
+    public static List<URL> getResourceFolderUrls(String folder) {
+        return getResourceFolderFiles(folder)
+                .stream()
+                .map(file -> {
+                    try {
+                        return file.toURI().toURL();
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .collect(Collectors.toList());
+    }
+
 }
