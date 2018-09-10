@@ -4,6 +4,8 @@ import be.thomaswinters.sentence.SentenceUtil;
 import com.google.common.collect.ImmutableSet;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -15,9 +17,20 @@ import java.util.stream.Stream;
 public class OriginalityTextChecker implements Predicate<String> {
 
     private final Collection<String> originalLines;
+    private final Function<String, String> originalityNormaliser;
+
+    public OriginalityTextChecker(Stream<String> lines, Function<String, String> originalityNormaliser) {
+        this.originalityNormaliser = originalityNormaliser;
+        this.originalLines = processOriginalLines(lines);
+
+    }
+
+    public OriginalityTextChecker(List<String> lines, Function<String, String> originalityNormaliser) {
+            this(lines.stream(), originalityNormaliser);
+    }
 
     public OriginalityTextChecker(Stream<String> originalLines) {
-        this.originalLines = processOriginalLines(originalLines);
+        this(originalLines, Function.identity());
     }
 
     public OriginalityTextChecker(Collection<String> originalLines) {
@@ -25,41 +38,46 @@ public class OriginalityTextChecker implements Predicate<String> {
     }
 
 
+
     /*-********************************************-*
      *  Is Original Checker
      *-********************************************-*/
 
+    /*-********************************************-*
+     *  Processors
+     *-********************************************-*/
+    private ImmutableSet<String> processOriginalLines(Stream<? extends String> originalLines) {
+        return ImmutableSet.copyOf(
+                originalLines
+                        // Custom normalisation
+                        .map(this.originalityNormaliser)
+                        // Map for originality check
+                        .map(this::processLineForOriginality)
+                        // Filter all empty
+                        .filter(e -> !e.equals(""))
+                        .iterator());
+    }
+
+    /*-********************************************-*/
+
+    private String processLineForOriginality(String line) {
+        return SentenceUtil.removePunctuations(line.replace("\n", " "))
+                .replaceAll("\\s+", " ")
+                .toLowerCase()
+                .trim();
+    }
+
     @Override
     public boolean test(String text) {
-        String originalityText = processLineForOriginality(text);
+        String originalityText = processLineForOriginality(originalityNormaliser.apply(text));
         return !originalLines.contains(text)
                 && originalLines
                 .stream()
                 .noneMatch(e -> e.contains(originalityText));
     }
 
-    /*-********************************************-*/
-
     private Collection<String> getOriginalLines() {
         return originalLines;
-    }
-
-    /*-********************************************-*
-     *  Processors
-     *-********************************************-*/
-    private static ImmutableSet<String> processOriginalLines(Stream<? extends String> originalLines) {
-        return ImmutableSet.copyOf(
-                originalLines
-                        // Map for originality check
-                        .map(OriginalityTextChecker::processLineForOriginality)
-                        // Filter all empty
-                        .filter(e -> !e.equals(""))
-                        .iterator());
-    }
-
-
-    private static String processLineForOriginality(String line) {
-        return SentenceUtil.removePunctuations(line.replace("\n", " ")).replaceAll("\\s+", " ").toLowerCase().trim();
     }
 
     /*-********************************************-*/
