@@ -1,13 +1,15 @@
 package be.thomaswinters.util;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Arrays;
+import java.nio.file.*;
+import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -43,25 +45,34 @@ public class DataLoader {
         }
     }
 
-    public static List<File> getResourceFolderFiles(String folder) {
-        ClassLoader loader = Thread.currentThread().getContextClassLoader();
-        URL url = loader.getResource(folder);
-        assert url != null;
-        String path = url.getPath();
-        return Arrays.asList(Objects.requireNonNull(new File(path).listFiles()));
+    public static List<Path> getResourceFolderPaths(String folder) throws URISyntaxException, IOException {
+        URL urlFolder = ClassLoader.getSystemResource(folder);
+        URI uri = urlFolder.toURI();
+        Path myPath;
+        // When in a jar:
+        if (uri.getScheme().equals("jar")) {
+            FileSystem fileSystem = FileSystems.newFileSystem(uri, Collections.<String, Object>emptyMap());
+            myPath = fileSystem.getPath(folder);
+        }
+        // In IDE
+        else {
+            myPath = Paths.get(uri);
+        }
+
+        Stream<Path> walk = Files.walk(myPath, 1);
+        walk = walk.filter(Files::isRegularFile);
+        return walk.collect(Collectors.toList());
     }
 
-    public static List<URL> getResourceFolderUrls(String folder) {
-        return getResourceFolderFiles(folder)
-                .stream()
-                .map(file -> {
+    public static List<URL> getResourceFolderURLs(String folder) throws URISyntaxException, IOException {
+        return getResourceFolderPaths(folder).stream()
+                .map(path -> {
                     try {
-                        return file.toURI().toURL();
-                    } catch (Exception e) {
+                        return path.toUri().toURL();
+                    } catch (MalformedURLException e) {
                         throw new RuntimeException(e);
                     }
                 })
                 .collect(Collectors.toList());
     }
-
 }
