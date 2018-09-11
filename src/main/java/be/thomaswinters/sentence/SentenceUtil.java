@@ -2,10 +2,7 @@ package be.thomaswinters.sentence;
 
 import be.thomaswinters.ner.CapitalisedNameExtractor;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.OptionalInt;
+import java.util.*;
 import java.util.PrimitiveIterator.OfInt;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -147,7 +144,10 @@ public class SentenceUtil {
     }
 
     public static String removeBetweenBrackets(String input) {
-        return input.replaceAll("\\s*\\([^\\)]*\\)\\s*", " ");
+        return input.replaceAll("\\s*\\([^\\)]*\\)\\s*", " ").replaceAll(" +", " ").trim();
+    }
+    public static String removeBetweenSquareBrackets(String input) {
+        return input.replaceAll("\\s*\\[[^\\]]*\\]\\s*", " ").replaceAll(" +", " ").trim();
     }
 
     public static String createString(char character, int length) {
@@ -193,5 +193,9 @@ public class SentenceUtil {
 
     public static Collection<String> findNames(String text) {
         return capitalisedNameExtractor.findNames(text);
+    }
+
+    public static List<String> getParagraphs(String text) {
+        return Stream.of(text.split("\n\n")).map(String::trim).collect(Collectors.toList());
     }
 }
