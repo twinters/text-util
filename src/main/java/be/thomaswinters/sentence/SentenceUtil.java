@@ -17,6 +17,7 @@ public class SentenceUtil {
     // }
     // return fixSentenceEnd(end.getAsInt());
     // }
+    private static final Set<Character> punctuations = Set.of('.', '!', ',', '?', ';', ':');
 
     private static int fixSentenceEnd(int end, String text) {
         // Check end accolade
@@ -69,11 +70,23 @@ public class SentenceUtil {
     }
 
     public static boolean isPunctuation(char ch) {
-        return ch == '.' || ch == '!' || ch == ',' || ch == '?' || ch == ';';
+        return punctuations.contains(ch);
     }
 
     public static String removePunctuations(String text) {
         return text.replaceAll("([!,:;.?()])", "");
+    }
+
+    public static String trimPunctionation(String text) {
+        int beginIdx = 0;
+        int endIdx = text.length();
+        while (beginIdx < endIdx && isPunctuation(text.charAt(beginIdx))) {
+            beginIdx += 1;
+        }
+        while (beginIdx < endIdx && isPunctuation(text.charAt(endIdx - 1))) {
+            endIdx -= 1;
+        }
+        return text.substring(beginIdx, endIdx);
     }
 
     public static boolean hasOnlyLetters(String text) {
@@ -146,6 +159,7 @@ public class SentenceUtil {
     public static String removeBetweenBrackets(String input) {
         return input.replaceAll("\\s*\\([^\\)]*\\)\\s*", " ").replaceAll(" +", " ").trim();
     }
+
     public static String removeBetweenSquareBrackets(String input) {
         return input.replaceAll("\\s*\\[[^\\]]*\\]\\s*", " ").replaceAll(" +", " ").trim();
     }
@@ -196,6 +210,6 @@ public class SentenceUtil {
     }
 
     public static List<String> getParagraphs(String text) {
-        return Stream.of(text.split("\n\n")).map(String::trim).collect(Collectors.toList());
+        return Stream.of(text.split("\n\\s*?\n")).map(String::trim).collect(Collectors.toList());
     }
 }
