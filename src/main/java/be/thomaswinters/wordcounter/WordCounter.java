@@ -171,11 +171,15 @@ public class WordCounter {
         return wordCount.elementSet();
     }
 
-    public OptionalInt getLowestWordCount(String words) {
+    public int getLowestWordCount(String words) {
+        if (words.isEmpty()) {
+            return 0;
+        }
         return SentenceUtil
                 .getWordsStream(words)
                 .mapToInt(this::getCount)
-                .min();
+                .min()
+                .getAsInt();
     }
 
     @Override
