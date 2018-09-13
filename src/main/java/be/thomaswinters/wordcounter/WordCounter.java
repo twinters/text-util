@@ -117,6 +117,13 @@ public class WordCounter {
         return wordCount.count(converter.convertWord(word));
     }
 
+    public double getRelativeCount(String word) {
+        return ((double)getCount(word)) / getSize();
+    }
+    public double getRelativeLogCount(String word) {
+        return Math.log(getCount(word)+1) / Math.log(getSize()+1);
+    }
+
     public int getSize() {
         return wordCount.size();
     }
