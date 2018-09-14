@@ -3,7 +3,12 @@ package be.thomaswinters.sentence;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+import java.util.OptionalInt;
+import java.util.stream.Collectors;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SentenceUtilTest {
 
@@ -20,5 +25,41 @@ public class SentenceUtilTest {
         assertEquals("is a", SentenceUtil.removeBetweenSquareBrackets("[test] is a [bla bla]"));
         assertEquals("how do you this", SentenceUtil.removeBetweenSquareBrackets("how do you [test] this"));
         assertEquals("", SentenceUtil.removeBetweenSquareBrackets("[Test:]"));
+    }
+
+    @Test
+    void test_split_into_sentence_1() {
+        assertEquals(
+                Arrays.asList(
+                        "In de stadsbibliotheek in Gent heeft de eerste \"Pano Live\" op locatie plaatsgevonden.",
+                        "De aanwezigen debatteerden met de makers van de uitzending \"Arm Vlaanderen, vijf jaar later\", die gisteren werd uitgezonden.",
+                        "In de toekomst wil \"Pano\" vaker dieper ingaan op maatschappelijke thema's op locatie met de kijkers."
+                ),
+                SentenceUtil.splitIntoSentences("In de stadsbibliotheek in Gent heeft de eerste \"Pano Live\" op locatie plaatsgevonden. De aanwezigen debatteerden met de makers van de uitzending \"Arm Vlaanderen, vijf jaar later\", die gisteren werd uitgezonden. In de toekomst wil \"Pano\" vaker dieper ingaan op maatschappelijke thema's op locatie met de kijkers.\n")
+        );
+    }
+
+    @Test
+    void test_split_into_sentence_2() {
+        assertEquals(
+                Arrays.asList(
+                        "De Duitstalige Gemeenschap telt negen gemeenten in het uiterste oosten van het land en is goed voor een kleine 80.000 inwoners.",
+                        "De regio werd in 1970 gecreëerd als Duitse Cultuurgemeenschap en had oorspronkelijk maar heel beperkte bevoegdheden.",
+                        "Voor alle belangrijke beslissingen waren de Duitstaligen afhankelijk van het Waals Gewest."
+
+                ),
+                SentenceUtil.splitIntoSentences("De Duitstalige Gemeenschap telt negen gemeenten in het uiterste oosten van het land en is goed voor een kleine 80.000 inwoners. De regio werd in 1970 gecreëerd als Duitse Cultuurgemeenschap en had oorspronkelijk maar heel beperkte bevoegdheden. Voor alle belangrijke beslissingen waren de Duitstaligen afhankelijk van het Waals Gewest."
+                )
+        );
+    }
+
+    @Test
+    void test_get_sentence_end() {
+        OptionalInt sentenceEnd=
+                SentenceUtil.getFirstSentenceEndIndex("De Duitstalige Gemeenschap telt negen gemeenten in het uiterste oosten van het land en is goed voor een kleine 80.000 inwoners. De regio werd in 1970 gecreëerd als Duitse Cultuurgemeenschap en had oorspronkelijk maar heel beperkte bevoegdheden. Voor alle belangrijke beslissingen waren de Duitstaligen afhankelijk van het Waals Gewest.");
+        System.out.println(sentenceEnd);
+        assertTrue(sentenceEnd.isPresent());
+        assertEquals(126, sentenceEnd.getAsInt());
+
     }
 }
