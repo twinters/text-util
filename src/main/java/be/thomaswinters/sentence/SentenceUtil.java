@@ -3,7 +3,6 @@ package be.thomaswinters.sentence;
 import be.thomaswinters.ner.CapitalisedNameExtractor;
 
 import java.util.*;
-import java.util.PrimitiveIterator.OfInt;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -18,6 +17,7 @@ public class SentenceUtil {
     // return fixSentenceEnd(end.getAsInt());
     // }
     private static final Set<Character> punctuations = Set.of('.', '!', ',', '?', ';', ':');
+    private static final Set<Character> SENTENCE_ENDS = Set.of('.', '!', '?');
 
     private static int fixSentenceEnd(int end, String text) {
         // Check end accolade
@@ -39,12 +39,15 @@ public class SentenceUtil {
         return index;
     }
 
-    private static IntStream getSentenceEnds(String text) {
-        return Stream.of(text.indexOf('.'), text.indexOf('!'), text.indexOf('?'))
+    static IntStream getSentenceEnds(String text) {
+        return IntStream.iterate(
+                SENTENCE_ENDS.stream().mapToInt(text::indexOf).filter(i -> i > 0).min().orElse(-1),
+                index -> index >= 0,
+                index -> SENTENCE_ENDS.stream().mapToInt(chr -> text.indexOf(chr, index + 1)).filter(i -> i > 0).min().orElse(-1)
+        )
                 .filter(e -> e >= 0)
                 .map(e -> fixSentenceEnd(e, text))
-                .filter(e -> e + 1 >= text.length() || Character.isSpaceChar(text.charAt(e + 1)))
-                .mapToInt(e -> e);
+                .filter(e -> e + 1 >= text.length() || Character.isSpaceChar(text.charAt(e + 1)));
     }
 
     /**
@@ -124,24 +127,27 @@ public class SentenceUtil {
             result.add(text.substring(0, firstEnd.getAsInt() + 1).trim());
             text = text.substring(firstEnd.getAsInt() + 1);
         }
-        return result;
-    }
-
-    public static List<String> splitInSentences(String text) {
-        OfInt sentenceEnds = getSentenceEnds(text).sorted().iterator();
-        List<String> result = new ArrayList<String>();
-
-        int previousStart = 0;
-        while (sentenceEnds.hasNext()) {
-            int current = sentenceEnds.nextInt() + 1;
-
-            result.add(text.substring(previousStart, current).trim());
-
-            previousStart = current;
+        if (text.trim().length() > 0) {
+            result.add(text.trim());
         }
-        result.add(text.substring(previousStart, text.length()).trim());
         return result;
     }
+
+//    public static List<String> splitInSentences(String text) {
+//        OfInt sentenceEnds = getSentenceEnds(text).sorted().iterator();
+//        List<String> result = new ArrayList<String>();
+//
+//        int previousStart = 0;
+//        while (sentenceEnds.hasNext()) {
+//            int current = sentenceEnds.nextInt() + 1;
+//
+//            result.add(text.substring(previousStart, current).trim());
+//
+//            previousStart = current;
+//        }
+//        result.add(text.substring(previousStart, text.length()).trim());
+//        return result;
+//    }
 
     public static boolean isCapitalized(String word) {
         word = removePunctuations(word);

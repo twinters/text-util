@@ -16,7 +16,7 @@ public class CapitalisedNameExtractor {
     }
 
     public Stream<String> findNamesStream(String text) {
-        return SentenceUtil.splitInSentences(text)
+        return SentenceUtil.splitIntoSentences(text)
                 .stream()
                 .flatMap(e -> Stream.of(e.split("\n")))
                 .flatMap(e -> findNamesInSentence(e).stream());
@@ -26,7 +26,7 @@ public class CapitalisedNameExtractor {
     private List<String> findNamesInSentence(String sentence) {
         List<String> foundNames = new ArrayList<>();
 
-        List<String> words = Stream.of(sentence.split(" ")).collect(Collectors.toList());
+        List<String> words = SentenceUtil.getWords(sentence);
 
         int start = 1;
         // Add first capitalized words only if second word is capitalized
