@@ -1,37 +1,43 @@
 package be.thomaswinters.ner.data;
 
-import java.util.Collection;
+import com.google.common.collect.ImmutableMultiset;
+import com.google.common.collect.Multiset;
+import com.google.common.collect.Multisets;
+
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class NameAnalysis {
-    private final List<String> names;
-    private final List<String> potentiallyTooLongNames;
-    private final List<String> beginWords;
+    private final Multiset<String> names;
+    private final Multiset<String> potentiallyTooLongNames;
+    private final Multiset<String> beginWords;
 
-    public NameAnalysis(List<String> names, List<String> potentiallyTooLongNames, List<String> beginWords) {
+    public NameAnalysis(Multiset<String> names, Multiset<String> potentiallyTooLongNames, Multiset<String> beginWords) {
         this.names = names;
         this.potentiallyTooLongNames = potentiallyTooLongNames;
         this.beginWords = beginWords;
     }
 
+    public NameAnalysis(List<String> names, List<String> potentiallyTooLongNames, List<String> beginWords) {
+        this(ImmutableMultiset.copyOf(names), ImmutableMultiset.copyOf(potentiallyTooLongNames), ImmutableMultiset.copyOf(beginWords));
+    }
+
     public static NameAnalysis addAll(List<NameAnalysis> nameAnalyses) {
         return new NameAnalysis(
-                nameAnalyses.stream().map(NameAnalysis::getNames).flatMap(Collection::stream).collect(Collectors.toList()),
-                nameAnalyses.stream().map(NameAnalysis::getPotentiallyTooLongNames).flatMap(Collection::stream).collect(Collectors.toList()),
-                nameAnalyses.stream().map(NameAnalysis::getBeginWords).flatMap(Collection::stream).collect(Collectors.toList())
+                nameAnalyses.stream().map(NameAnalysis::getNames).reduce(ImmutableMultiset.of(), Multisets::sum),
+                nameAnalyses.stream().map(NameAnalysis::getPotentiallyTooLongNames).reduce(ImmutableMultiset.of(), Multisets::sum),
+                nameAnalyses.stream().map(NameAnalysis::getBeginWords).reduce(ImmutableMultiset.of(), Multisets::sum)
         );
     }
 
-    public List<String> getNames() {
+    public Multiset<String> getNames() {
         return names;
     }
 
-    public List<String> getPotentiallyTooLongNames() {
+    public Multiset<String> getPotentiallyTooLongNames() {
         return potentiallyTooLongNames;
     }
 
-    public List<String> getBeginWords() {
+    public Multiset<String> getBeginWords() {
         return beginWords;
     }
 }
