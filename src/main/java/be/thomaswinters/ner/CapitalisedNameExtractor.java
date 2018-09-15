@@ -14,7 +14,8 @@ import java.util.stream.Stream;
 
 public class CapitalisedNameExtractor {
 
-    private static final Set<String> PROHIBITED_NAMES = Set.of("de", "het", "van", "voor", "ze", "volgens", "ik", "we","jullie", "je", "hij", "zij");
+    private static final Set<String> PROHIBITED_NAMES = Set.of("de", "het", "van", "voor", "ze", "volgens", "ik", "we", "jullie", "je", "hij", "zij");
+    private static final Set<String> BETWEEN_NAMES = Set.of("van", "de", "&");
 
     public Multiset<String> findNames(String text) {
         return processSentencesNameAnalysises(SentenceUtil.splitIntoSentences(text)
@@ -89,7 +90,6 @@ public class CapitalisedNameExtractor {
         return result;
     }
 
-
     private NameAnalysis findNamesInSentence(String sentence) {
         sentence = sentence.trim();
         System.out.println("DEALING WITH SENTENCE: " + sentence);
@@ -98,7 +98,9 @@ public class CapitalisedNameExtractor {
         List<String> beginWords = new ArrayList<>();
 
         List<String> words = SentenceUtil
-                .getWordsStream(sentence)
+                .splitOnSpaces(sentence)
+                .map(String::trim)
+                .map(SentenceUtil::trimPunctionation)
                 .filter(e -> e.trim().length() > 0)
                 .collect(Collectors.toList());
 
@@ -122,7 +124,17 @@ public class CapitalisedNameExtractor {
             if (isPotentialName(words.get(start))) {
                 StringBuilder name = new StringBuilder(words.get(start));
                 start++;
-                while (start < words.size() && isPotentialName(words.get(start))) {
+                while (start < words.size() &&
+                        // If is a name, of can be a name if it's right after a name
+                        (isPotentialName(words.get(start)) || isPotentialNameAfterCertainName(words.get(start))
+                                // Or if it could be a name when it's between two names
+                                || (
+                                start + 1 < words.size()
+                                        && (
+                                        (isPotentialName(words.get(start + 1)) || isPotentialNameAfterCertainName(words.get(start + 1)))
+                                                && isPotentialNameBetweenCertainNames(words.get(start))
+                                ))
+                        )) {
                     name.append(" ").append(words.get(start));
                     start++;
                 }
@@ -137,6 +149,14 @@ public class CapitalisedNameExtractor {
                 .map(e -> e.replaceAll("([!,:.?\"'])", ""))
                 .collect(Collectors.toList());
         return new NameAnalysis(names, potentiallyTooLongNames, beginWords);
+    }
+
+    private boolean isPotentialNameAfterCertainName(String s) {
+        return s.chars().allMatch(Character::isDigit);
+    }
+
+    private boolean isPotentialNameBetweenCertainNames(String s) {
+        return BETWEEN_NAMES.contains(s.toLowerCase());
     }
 
     private boolean isPotentialName(String word) {
