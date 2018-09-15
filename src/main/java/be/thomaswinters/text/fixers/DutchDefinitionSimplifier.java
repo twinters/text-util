@@ -22,14 +22,14 @@ public class DutchDefinitionSimplifier implements ISentenceFixer {
                 .replaceAll("\\{.*} ?", "")
                 .replaceAll("\\[.*] ?", "")
                 .replaceAll(" -.*- ", " ")
-                .replaceAll(" {2}", " ")
-                .replaceAll("~?m;? ", "")
-                .replaceAll("~?v;? ", "")
-                .replaceAll("~?o;? ", "")
+                .replaceAll("^~?m;? ", "")
+                .replaceAll("^~?v;? ", "")
+                .replaceAll("^~?o;? ", "")
                 .replaceAll("en ?\\/ ?of", "of")
                 .replaceAll(".* [mvo] ", "")
                 // Better to replace beforehand with original word:
-                .replaceAll(".*~.*: ?", "");
+                .replaceAll(".*~.*: ?", "")
+                .replaceAll(" {2}", " ");
 
         // Remove superfluous punctuation at the end.
         while (!definition.trim().isEmpty() && !Character.isAlphabetic(definition.charAt(definition.length() - 1))) {
