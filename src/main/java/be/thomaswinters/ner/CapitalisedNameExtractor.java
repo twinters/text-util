@@ -56,9 +56,9 @@ public class CapitalisedNameExtractor {
 
                 // Add all these names
                 if (!namesContainingWord.isEmpty()) {
-                    System.out.println("adding " + word + " containers -> " + namesContainingWord);
+                    System.out.println("Adding" + word);
+                    beginWordsToAdd.add(word);
                 }
-                beginWordsToAdd.addAll(namesContainingWord);
             }
         }
         System.out.println("ADDED BEGIN WORDS : " + Multisets.copyHighestCountFirst(beginWordsToAdd) + "\n\n");
