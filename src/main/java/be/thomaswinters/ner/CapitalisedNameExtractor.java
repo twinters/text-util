@@ -18,6 +18,7 @@ public class CapitalisedNameExtractor {
     private static final Set<String> BETWEEN_NAMES = Set.of("van", "de", "&");
 
     public Multiset<String> findNames(String text) {
+        // TODO: Maybe add capitalised words between quotes
         return processSentencesNameAnalysises(SentenceUtil.splitIntoSentences(text)
                 .stream()
                 .flatMap(e -> Stream.of(e.split("\n")))

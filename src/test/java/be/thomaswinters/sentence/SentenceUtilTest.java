@@ -70,4 +70,18 @@ public class SentenceUtilTest {
                 Arrays.asList("Bart", "questce", "que", "tu", "en", "penses"),
                 words.subList(9, words.size()));
     }
+
+    @Test
+    void test_removeAllNonLettersAndNonPunctuations() {
+
+        assertEquals("", SentenceUtil.removeAllNonLettersAndNonPunctuations("♪"));
+        assertEquals("", SentenceUtil.removeAllNonLettersAndNonPunctuations("\u266A"));
+        assertEquals("", SentenceUtil.removeAllNonLettersAndNonPunctuations("\u266A\u266B"));
+        assertEquals("hello", SentenceUtil.removeAllNonLettersAndNonPunctuations("hello"));
+        assertEquals("hello", SentenceUtil.removeAllNonLettersAndNonPunctuations("hello\u266A"));
+        assertEquals("hello_world-1", SentenceUtil.removeAllNonLettersAndNonPunctuations("hello_world-1\u266A"));
+        assertEquals("I'm Thomas123: nice 2 meet you!",
+                SentenceUtil.removeAllNonLettersAndNonPunctuations("I'm Thomas123: nice 2 meet you!"));
+
+    }
 }
