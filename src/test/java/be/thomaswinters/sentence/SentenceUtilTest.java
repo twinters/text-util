@@ -4,8 +4,8 @@ package be.thomaswinters.sentence;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.OptionalInt;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -55,11 +55,19 @@ public class SentenceUtilTest {
 
     @Test
     void test_get_sentence_end() {
-        OptionalInt sentenceEnd=
+        OptionalInt sentenceEnd =
                 SentenceUtil.getFirstSentenceEndIndex("De Duitstalige Gemeenschap telt negen gemeenten in het uiterste oosten van het land en is goed voor een kleine 80.000 inwoners. De regio werd in 1970 gecreëerd als Duitse Cultuurgemeenschap en had oorspronkelijk maar heel beperkte bevoegdheden. Voor alle belangrijke beslissingen waren de Duitstaligen afhankelijk van het Waals Gewest.");
         System.out.println(sentenceEnd);
         assertTrue(sentenceEnd.isPresent());
         assertEquals(126, sentenceEnd.getAsInt());
 
+    }
+
+    @Test
+    void test_get_words() {
+        List<String> words = SentenceUtil.getWords("Uiteindelijk duwt Michel het mes richting de grootste partij: \"Bart, qu'est-ce que tu en penses?\"");
+        assertEquals(
+                Arrays.asList("Bart", "questce", "que", "tu", "en", "penses"),
+                words.subList(9, words.size()));
     }
 }

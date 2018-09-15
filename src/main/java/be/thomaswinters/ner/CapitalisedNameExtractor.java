@@ -82,7 +82,7 @@ public class CapitalisedNameExtractor {
         List<String> potentiallyTooLongNames = new ArrayList<>();
         List<String> beginWords = new ArrayList<>();
 
-        List<String> words = SentenceUtil.getWords(sentence);
+        List<String> words = SentenceUtil.getWords(sentence.trim());
 
         int start = 1;
         // Add first capitalized words only if second word is capitalized

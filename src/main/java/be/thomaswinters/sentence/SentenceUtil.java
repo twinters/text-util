@@ -16,8 +16,8 @@ public class SentenceUtil {
     // }
     // return fixSentenceEnd(end.getAsInt());
     // }
-    private static final Set<Character> punctuations = Set.of('.', '!', ',', '?', ';', ':');
-    private static final Set<Character> SENTENCE_ENDS = Set.of('.', '!', '?');
+    public static final Set<Character> PUNCTUATIONS = Set.of('.', '!', ',', '?', ';', ':');
+    public static final Set<Character> SENTENCE_ENDS = Set.of('.', '!', '?');
 
     private static int fixSentenceEnd(int end, String text) {
         // Check end accolade
@@ -73,7 +73,7 @@ public class SentenceUtil {
     }
 
     public static boolean isPunctuation(char ch) {
-        return punctuations.contains(ch);
+        return PUNCTUATIONS.contains(ch);
     }
 
     public static String removePunctuations(String text) {
@@ -101,7 +101,8 @@ public class SentenceUtil {
     }
 
     public static Stream<String> splitOnSpaces(String text) {
-        return Stream.of(text.split("\\s"));
+        // Weird bug with some kind of hidden space
+        return Stream.of(text.split("\\s")).flatMap(t->Stream.of(t.split(" ")));
     }
 
     public static String joinWithSpaces(List<String> strings) {
