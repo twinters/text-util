@@ -8,8 +8,6 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class SentenceUtil {
-    private static final CapitalisedNameExtractor capitalisedNameExtractor = new CapitalisedNameExtractor();
-
     // private static OptionalInt fixSentenceEnd(OptionalInt end, String text) {
     // if (!end.isPresent()) {
     // return end;
@@ -18,6 +16,8 @@ public class SentenceUtil {
     // }
     public static final Set<Character> PUNCTUATIONS = Set.of('.', '!', ',', '?', ';', ':');
     public static final Set<Character> SENTENCE_ENDS = Set.of('.', '!', '?');
+    private static final CapitalisedNameExtractor capitalisedNameExtractor = new CapitalisedNameExtractor();
+    private static final String punctuations = "!,:;.?()\"'";
 
     private static int fixSentenceEnd(int end, String text) {
         // Check end accolade
@@ -77,7 +77,15 @@ public class SentenceUtil {
     }
 
     public static String removePunctuations(String text) {
-        return text.replaceAll("([!,:;.?()])", "");
+        return text.replaceAll("([" + punctuations + "])", "");
+    }
+
+    public static String removeAllNonLettersAndNonPunctuations(String text) {
+        return text.replaceAll("[^" + punctuations + "\\p{L}\\s0-9_-]", "");
+    }
+
+    public static boolean hasSomeLettersNumbersOrPunctuation(String text) {
+        return removeAllNonLettersAndNonPunctuations(text).trim().length() > 0;
     }
 
     public static String trimPunctionation(String text) {
@@ -102,7 +110,7 @@ public class SentenceUtil {
 
     public static Stream<String> splitOnSpaces(String text) {
         // Weird bug with some kind of hidden space
-        return Stream.of(text.split("\\s")).flatMap(t->Stream.of(t.split(" ")));
+        return Stream.of(text.split("\\s")).flatMap(t -> Stream.of(t.split(" ")));
     }
 
     public static String joinWithSpaces(List<String> strings) {
