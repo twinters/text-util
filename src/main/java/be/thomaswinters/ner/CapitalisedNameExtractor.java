@@ -1,42 +1,103 @@
 package be.thomaswinters.ner;
 
+import be.thomaswinters.ner.data.NameAnalysis;
 import be.thomaswinters.sentence.SentenceUtil;
+import com.google.common.collect.HashMultiset;
+import com.google.common.collect.Multiset;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class CapitalisedNameExtractor {
 
-    public List<String> findNames(String text) {
-        return findNamesStream(text)
-                .collect(Collectors.toList());
+    private static final Set<String> PROHIBITED_NAMES = Set.of("de", "het", "van", "voor");
 
-    }
-
-    public Stream<String> findNamesStream(String text) {
-        return SentenceUtil.splitIntoSentences(text)
+    public Multiset<String> findNames(String text) {
+        return processSentencesNameAnalysises(SentenceUtil.splitIntoSentences(text)
                 .stream()
                 .flatMap(e -> Stream.of(e.split("\n")))
-                .flatMap(e -> findNamesInSentence(e).stream());
+                .map(this::findNamesInSentence)
+                .collect(Collectors.toList()));
 
     }
 
-    private List<String> findNamesInSentence(String sentence) {
-        List<String> foundNames = new ArrayList<>();
+    private Multiset<String> processSentencesNameAnalysises(List<NameAnalysis> sentenceAnalysises) {
+        NameAnalysis nameAnalysis = NameAnalysis.addAll(sentenceAnalysises);
+
+        // Add all "normal" names: they're safe
+        Multiset<String> result = HashMultiset.create(nameAnalysis.getNames());
+
+        // Only add "potentially too long names" if they are already in the names set:
+        for (String name : nameAnalysis.getPotentiallyTooLongNames()) {
+            if (result.contains(name)) {
+                result.add(name);
+            }
+        }
+
+        // Only add "begin of sentence" words if they're already part of something in the names set:
+        for (String word : nameAnalysis.getBeginWords()) {
+            if (!PROHIBITED_NAMES.contains(word)) {
+                // Get all names containing this word
+                List<String> namesContainingWord = result
+                        .stream()
+                        .filter(name -> name.contains(word))
+                        .collect(Collectors.toList());
+
+                // Add all these names
+                result.addAll(namesContainingWord);
+            }
+        }
+
+        // Increase the count of names that are longer than other names
+        result = increaseLongerNamesCount(result);
+
+        return result;
+    }
+
+    /**
+     * Increases all names that contain other names with their counts
+     */
+    private Multiset<String> increaseLongerNamesCount(Multiset<String> nameCounts) {
+
+        Multiset<String> result = HashMultiset.create(nameCounts);
+        for (Multiset.Entry<String> entry : nameCounts.entrySet()) {
+
+            for (String otherName : nameCounts.elementSet()) {
+                if (otherName.contains(entry.getElement())) {
+                    result.add(otherName, entry.getCount());
+                }
+            }
+        }
+
+        return result;
+    }
+
+
+    private NameAnalysis findNamesInSentence(String sentence) {
+        System.out.println("DEALING WITH SENTENCE: " + sentence);
+        List<String> names = new ArrayList<>();
+        List<String> potentiallyTooLongNames = new ArrayList<>();
+        List<String> beginWords = new ArrayList<>();
 
         List<String> words = SentenceUtil.getWords(sentence);
 
         int start = 1;
         // Add first capitalized words only if second word is capitalized
-        if (words.size() >= 2 && isPotentialName(words.get(0)) && isPotentialName(words.get(1))) {
-            StringBuilder name = new StringBuilder(words.get(0));
-            while (start < words.size() && isPotentialName(words.get(start))) {
-                name.append(" ").append(words.get(start));
-                start++;
+        if (isPotentialName(words.get(0))) {
+            if (words.size() >= 2 && isPotentialName(words.get(1))) {
+                StringBuilder name = new StringBuilder(words.get(0));
+                while (start < words.size() && isPotentialName(words.get(start))) {
+                    name.append(" ").append(words.get(start));
+                    start++;
+                }
+                System.out.println("beginname" + name.toString());
+                potentiallyTooLongNames.add(name.toString());
+            } else {
+                beginWords.add(words.get(0));
             }
-            foundNames.add(name.toString());
         }
 
         while (start < words.size()) {
@@ -47,16 +108,17 @@ public class CapitalisedNameExtractor {
                     name.append(" ").append(words.get(start));
                     start++;
                 }
-                foundNames.add(name.toString());
+                System.out.println("sentencename: " + start + ": " + name.toString());
+                names.add(name.toString());
             }
             start++;
         }
 
-        foundNames = foundNames
+        names = names
                 .stream()
                 .map(e -> e.replaceAll("([!,:.?\"'])", ""))
                 .collect(Collectors.toList());
-        return foundNames;
+        return new NameAnalysis(names, potentiallyTooLongNames, beginWords);
     }
 
     private boolean isPotentialName(String word) {
