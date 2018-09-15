@@ -11,7 +11,7 @@ repositories {
 
 dependencies {
     compile 'org.junit.jupiter:junit-jupiter-api:5.1.0'
-    compile 'com.google.guava:guava:11.0.2'
+    compile 'com.google.guava:guava:19.0'
     compile 'org.apache.commons:commons-lang3:3.5'
     compile 'info.debatty:java-string-similarity:0.24'
 }
