@@ -1,5 +1,6 @@
 package be.thomaswinters.sentence;
 
+
 import be.thomaswinters.ner.CapitalisedNameExtractor;
 
 import java.util.*;
@@ -163,6 +164,10 @@ public class SentenceUtil {
         return word.length() >= 2 && Character.isUpperCase(word.charAt(0)) && Character.isLowerCase(word.charAt(1));
     }
 
+    public static boolean hasCapitalisedLetter(String word) {
+        return !word.toLowerCase().equals(word);
+    }
+
     public static boolean isCapitalizedSentence(String sentence) {
         return Stream.of(sentence.split(" ")).allMatch(SentenceUtil::isCapitalized);
     }
@@ -189,12 +194,6 @@ public class SentenceUtil {
 
     /**
      * Replaces specific substring on a certain location with a replacement character
-     *
-     * @param text
-     * @param location
-     * @param toReplace
-     * @param replacementCharacter
-     * @return
      */
     public static String replaceCharacters(String text, int location, String toReplace, char replacementCharacter) {
         return text.substring(0, location) + createString(replacementCharacter, toReplace.length())
@@ -227,4 +226,5 @@ public class SentenceUtil {
     public static List<String> getParagraphs(String text) {
         return Stream.of(text.split("\n\\s*?\n")).map(String::trim).collect(Collectors.toList());
     }
+
 }
