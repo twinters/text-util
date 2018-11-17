@@ -22,8 +22,9 @@ public class DutchDefinitionSimplifier implements ISentenceFixer {
                 .replaceAll("\\{.*} ?", "")
                 .replaceAll("\\[.*] ?", "")
                 .replaceAll(" -.*- ", " ")
-                .replaceAll("^~?m;? ", "")
+                .replaceAll("^v/m ", "")
                 .replaceAll("^~?v;? ", "")
+                .replaceAll("^~?m;? ", "")
                 .replaceAll("^~?o;? ", "")
                 .replaceAll("en ?\\/ ?of", "of")
                 .replaceAll(".* [mvo] ", "")
@@ -35,7 +36,6 @@ public class DutchDefinitionSimplifier implements ISentenceFixer {
         while (!definition.trim().isEmpty() && !Character.isAlphabetic(definition.charAt(definition.length() - 1))) {
             definition = definition.substring(0, definition.length() - 1);
         }
-
         return definition;
     }
 
