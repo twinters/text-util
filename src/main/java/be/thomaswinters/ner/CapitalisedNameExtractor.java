@@ -16,7 +16,9 @@ public class CapitalisedNameExtractor {
 
     private static final Set<String> PROHIBITED_NAMES = Set.of("de", "het", "van", "voor", "volgens",
             "ik", "we", "jullie", "je", "hij", "zij", "ze");
-    private static final Set<String> BETWEEN_NAMES = Set.of("van", "de", "der", "&", "voor", "en");
+    private static final Set<String> BETWEEN_NAMES = Set.of("van",
+//            "de", "der", "voor",
+            "&", "en");
 
     public Multiset<String> findNames(String text) {
         // TODO: Maybe add capitalised words between quotes
@@ -24,6 +26,7 @@ public class CapitalisedNameExtractor {
                 .stream()
                 .flatMap(e -> Stream.of(e.split("\n")))
                 .flatMap(e -> Stream.of(e.split("\"")))
+                .map(SentenceUtil::removeBetweenBrackets)
                 .map(this::removeCertainPunctuation)
                 .map(this::findNamesInSentence)
                 .collect(Collectors.toList()));
