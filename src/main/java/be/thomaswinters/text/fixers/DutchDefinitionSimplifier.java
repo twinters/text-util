@@ -23,9 +23,9 @@ public class DutchDefinitionSimplifier implements ISentenceFixer {
                 .replaceAll("\\[.*] ?", "")
                 .replaceAll(" -.*- ", " ")
                 .replaceAll("^v/m ", "")
-                .replaceAll("^~?v;? ", "")
-                .replaceAll("^~?m;? ", "")
-                .replaceAll("^~?o;? ", "")
+                .replaceAll("^~?v(;|:)? ", "")
+                .replaceAll("^~?m(;|:)? ", "")
+                .replaceAll("^~?o(;|:)? ", "")
                 .replaceAll("en ?\\/ ?of", "of")
                 .replaceAll(".* [mvo] ", "")
                 // Better to replace beforehand with original word:
