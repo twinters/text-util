@@ -101,6 +101,23 @@ public class SentenceUtil {
         return text.substring(beginIdx, endIdx);
     }
 
+    public static boolean hasEndingPunctuation(String word) {
+        return punctuations.contains("" + word.charAt(word.length() - 1));
+    }
+
+    public static String getUntilFirstPunctuation(String text) {
+        int minPos = Integer.MAX_VALUE;
+        for (char ch : punctuations.toCharArray()) {
+            if (text.contains("" + ch)) {
+                minPos = Math.min(minPos, text.indexOf(ch));
+            }
+        }
+        if (minPos < Integer.MAX_VALUE) {
+            return text.substring(0, minPos);
+        }
+        return text;
+    }
+
     public static boolean hasOnlyLetters(String text) {
         return text.chars().allMatch(Character::isLetter);
     }
@@ -225,6 +242,10 @@ public class SentenceUtil {
 
     public static List<String> getParagraphs(String text) {
         return Stream.of(text.split("\n\\s*?\n")).map(String::trim).collect(Collectors.toList());
+    }
+
+    public static boolean containsAlphaNumeric(String word) {
+        return word.matches(".*[a-zA-Z0-9]+.*");
     }
 
 }
