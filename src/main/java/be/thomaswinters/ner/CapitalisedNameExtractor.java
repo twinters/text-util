@@ -45,20 +45,20 @@ public class CapitalisedNameExtractor {
 
         // Add all "normal" names: they're safe
         Multiset<String> result = HashMultiset.create(nameAnalysis.getNames());
-        System.out.println("\n\n********************************\nSTARTING FINAL AGGREGATE ANALYSIS:");
-        System.out.println("CERTAIN NAMES: " + Multisets.copyHighestCountFirst(result));
+//        System.out.println("\n\n********************************\nSTARTING FINAL AGGREGATE ANALYSIS:");
+//        System.out.println("CERTAIN NAMES: " + Multisets.copyHighestCountFirst(result));
 
         // Only add "potentially too long names" if they are already in the names set:
-        System.out.println("\n\n\nEXAMINING LONG NAMES: " + Multisets.copyHighestCountFirst(nameAnalysis.getPotentiallyTooLongNames()));
+//        System.out.println("\n\n\nEXAMINING LONG NAMES: " + Multisets.copyHighestCountFirst(nameAnalysis.getPotentiallyTooLongNames()));
         for (String name : nameAnalysis.getPotentiallyTooLongNames()) {
             if (result.contains(name)) {
                 result.add(name);
             }
         }
-        System.out.println("ADDED POTENTIALLY TOO LONG NAMES TO RESULT: " + Multisets.copyHighestCountFirst(result) + "\n\n\n");
+//        System.out.println("ADDED POTENTIALLY TOO LONG NAMES TO RESULT: " + Multisets.copyHighestCountFirst(result) + "\n\n\n");
 
         // Only add "begin of sentence" words if they're already part of something in the names set:
-        System.out.println("\n\n\nEXAMINING BEGIN WORDS: " + Multisets.copyHighestCountFirst(nameAnalysis.getBeginWords()));
+//        System.out.println("\n\n\nEXAMINING BEGIN WORDS: " + Multisets.copyHighestCountFirst(nameAnalysis.getBeginWords()));
         Multiset<String> beginWordsToAdd = HashMultiset.create();
         for (String word : nameAnalysis.getBeginWords()) {
             if (!PROHIBITED_NAMES.contains(word.toLowerCase())) {
@@ -75,9 +75,9 @@ public class CapitalisedNameExtractor {
                 }
             }
         }
-        System.out.println("ADDED BEGIN WORDS : " + Multisets.copyHighestCountFirst(beginWordsToAdd) + "\n\n");
+//        System.out.println("ADDED BEGIN WORDS : " + Multisets.copyHighestCountFirst(beginWordsToAdd) + "\n\n");
         result.addAll(beginWordsToAdd);
-        System.out.println("Current Result: " + Multisets.copyHighestCountFirst(result) + "\n\n");
+//        System.out.println("Current Result: " + Multisets.copyHighestCountFirst(result) + "\n\n");
 
         // Increase the count of names that are longer than other names
         result = increaseLongerNamesCount(result);
@@ -105,7 +105,7 @@ public class CapitalisedNameExtractor {
 
     private NameAnalysis findNamesInSentence(String sentence) {
         sentence = sentence.trim();
-        System.out.println("DEALING WITH SENTENCE: " + sentence);
+//        System.out.println("DEALING WITH SENTENCE: " + sentence);
         List<String> names = new ArrayList<>();
         List<String> potentiallyTooLongNames = new ArrayList<>();
         List<String> beginWords = new ArrayList<>();
@@ -126,7 +126,7 @@ public class CapitalisedNameExtractor {
                     name.append(" ").append(words.get(start));
                     start++;
                 }
-                System.out.println("beginname" + name.toString());
+//                System.out.println("beginname" + name.toString());
                 potentiallyTooLongNames.add(name.toString());
             } else {
                 beginWords.add(words.get(0));
@@ -151,7 +151,7 @@ public class CapitalisedNameExtractor {
                     name.append(" ").append(words.get(start));
                     start++;
                 }
-                System.out.println("sentencename: " + start + ": " + name.toString());
+//                System.out.println("sentencename: " + start + ": " + name.toString());
                 names.add(name.toString());
             }
             start++;
