@@ -28,7 +28,6 @@ public class CapitalisedNameExtractor {
                 .flatMap(e -> Stream.of(e.split("\"")))
                 .map(SentenceUtil::removeBetweenBrackets)
                 .flatMap(e -> Stream.of(e.split("“")))
-                .flatMap(e -> Stream.of(e.split("”")))
                 .map(this::removeCertainPunctuation)
                 .filter(e -> e.length() > 0)
                 .map(this::findNamesInSentence)
