@@ -1,4 +1,4 @@
-package be.thomaswinters.ner;
+﻿package be.thomaswinters.ner;
 
 import be.thomaswinters.ner.data.NameAnalysis;
 import be.thomaswinters.sentence.SentenceUtil;
@@ -27,7 +27,8 @@ public class CapitalisedNameExtractor {
                 .flatMap(e -> Stream.of(e.split("\n")))
                 .flatMap(e -> Stream.of(e.split("\"")))
                 .map(SentenceUtil::removeBetweenBrackets)
-                .flatMap(e -> Stream.of(e.split("“")))
+                .flatMap(e -> Stream.of(e.split("\u201C")))
+                .flatMap(e -> Stream.of(e.split("\u201D")))
                 .map(this::removeCertainPunctuation)
                 .filter(e -> e.length() > 0)
                 .map(this::findNamesInSentence)
