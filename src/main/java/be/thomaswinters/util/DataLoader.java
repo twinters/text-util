@@ -20,6 +20,9 @@ public class DataLoader {
                 new InputStreamReader(url.openStream()));
         return in.lines();
     }
+    public static Stream<String> readLinesStream(String s) throws IOException {
+        return readLinesStream(ClassLoader.getSystemResource(s));
+    }
 
     public static List<String> readLines(URL url) throws IOException {
         return readLinesStream(url).collect(Collectors.toList());
