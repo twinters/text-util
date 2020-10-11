@@ -1,4 +1,4 @@
-﻿package be.thomaswinters.ner;
+package be.thomaswinters.ner;
 
 import be.thomaswinters.ner.data.NameAnalysis;
 import be.thomaswinters.sentence.SentenceUtil;

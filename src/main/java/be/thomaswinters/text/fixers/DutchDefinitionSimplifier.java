@@ -30,7 +30,8 @@ public class DutchDefinitionSimplifier implements ISentenceFixer {
                 .replaceAll(".* [mvo] ", "")
                 // Better to replace beforehand with original word:
                 .replaceAll(".*~.*: ?", "")
-                .replaceAll(" {2}", " ");
+                .replaceAll(" {2}", " ")
+                .replaceAll(":", "");
 
         // Remove superfluous punctuation at the end.
         while (!definition.trim().isEmpty() && !Character.isAlphabetic(definition.charAt(definition.length() - 1))) {
